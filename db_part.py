@@ -2,6 +2,18 @@ import psycopg2
 from config import config
 from time import sleep
 from tqdm import tqdm
+from tabulate import tabulate
+
+
+def parsing(source):
+    print("----------------------")
+    list_value = []
+    column_list = ["title", "login", "password", "email"]
+
+    for info in source:
+        list_value.append(list(info))
+
+    return print(tabulate(list_value, column_list, tablefmt="grid"))
 
 
 def process(out: bool, param=""):
@@ -15,13 +27,13 @@ def process(out: bool, param=""):
         cur = conn.cursor()
 
         if not out:
-            cur.execute(f"SELECT * from users_information where title = '{param}'")
+            cur.execute(f"SELECT title, login, pass, email from users_information where title = '{param}'")
             response = cur.fetchall()
 
             for i in tqdm(range(2)):
                 sleep(1)
 
-            print(f"\n{response}" if response else f"\nThere is no such information like <<{param}>>")
+            print(f"\n{parsing(response)}" if response else f"\nThere is no such information like <<{param}>>")
         else:
             sql = f"insert into users_information (title,login,pass,email) values(%s,%s,%s,%s)"
             sql_list = [
@@ -49,7 +61,7 @@ def process(out: bool, param=""):
 def navigation():
     print(f"Welcome to <<Password keeper program>>\nIn this program you can store your passwords for easy or get it "
           f"back.\n")
-    user = input("If you need to get info, print <<get>>\nIf you need to get info, print <<set>>\n\t\t----->  ").lower()
+    user = input("If you need to get info, print <<get>>\nIf you need to set info, print <<set>>\n\t\t----->  ").lower()
 
     if user == 'get':
         process(False, input("Write 'Title' of your information, to get it: "))
