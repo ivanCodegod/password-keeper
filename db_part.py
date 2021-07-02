@@ -1,8 +1,10 @@
 import psycopg2
 from config import config
+from time import sleep
+from tqdm import tqdm
 
 
-def connect(out: bool, param=""):
+def process(out: bool, param=""):
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
@@ -14,9 +16,12 @@ def connect(out: bool, param=""):
 
         if not out:
             cur.execute(f"SELECT * from users_information where title = '{param}'")
-            db_version = cur.fetchall()
+            response = cur.fetchall()
 
-            print(f"{db_version}")
+            for i in tqdm(range(2)):
+                sleep(1)
+
+            print(f"\n{response}" if response else f"\nThere is no such information like <<{param}>>")
         else:
             sql = f"insert into users_information (title,login,pass,email) values(%s,%s,%s,%s)"
             sql_list = [
@@ -25,8 +30,12 @@ def connect(out: bool, param=""):
                  input('Enter <<password>>: '),
                  input('Enter <<email>>: '))
             ]
-            cur.executemany(sql, sql_list)
+            # Progress bar
+            for i in tqdm(range(3)):
+                sleep(1)
+            print('\nDone. Your information in safe!')
 
+            cur.executemany(sql, sql_list)
             conn.commit()
 
         cur.close()
@@ -35,7 +44,6 @@ def connect(out: bool, param=""):
     finally:
         if conn is not None:
             conn.close()
-            print('Database connection closed.')
 
 
 def navigation():
@@ -44,9 +52,9 @@ def navigation():
     user = input("If you need to get info, print <<get>>\nIf you need to get info, print <<set>>\n\t\t----->  ").lower()
 
     if user == 'get':
-        connect(False, input("Write 'Title' of your information, to get it: "))
+        process(False, input("Write 'Title' of your information, to get it: "))
     elif user == 'set':
-        connect(True, "")
+        process(True, "")
 
 
 if __name__ == '__main__':
