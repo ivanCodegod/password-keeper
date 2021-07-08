@@ -6,9 +6,9 @@ from tabulate import tabulate
 
 
 def help_note():
-    print(f"\n-------------------------------------------------\n'get' - To get your information that you have "
+    print(f"\n{'-' * 50}\n'get' - To get your information that you "
           f"already save.\n'set' - To set your information into a storage.\n'all' - To see all Title's.\n'q' To quit "
-          f"the program.\n'comm' - To see all available commands.\n-------------------------------------------------")
+          f"the program.\n'comm' - To see all available commands.\n{'-' * 50}")
 
 
 def parsing(source):
@@ -36,7 +36,7 @@ def process(get: bool, param="search_all"):
             cur.execute(f"SELECT title, login, pass, email from users_information where title = '{title}'")
             response = cur.fetchall()
             # Progress bar
-            for i in tqdm(range(2)):
+            for i in tqdm.tqdm(range(2)):
                 sleep(1)
 
             print(f"\n{parsing(response)}" if response else f"\nThere is no such information like <<{title}>>")
@@ -47,7 +47,7 @@ def process(get: bool, param="search_all"):
             cur.execute(f"SELECT title from users_information order by title")
             response = cur.fetchall()
             # Progress bar
-            for i in tqdm(range(2)):
+            for i in tqdm.tqdm(range(2)):
                 sleep(1)
 
             print(f"\n{parsing(response)}\n\nYou can open any of them." if response else f"\nThere is no title's, you "
@@ -62,7 +62,7 @@ def process(get: bool, param="search_all"):
                  input('Enter <<email>>: '))
             ]
             # Progress bar
-            for i in tqdm(range(3)):
+            for i in tqdm.tqdm(range(3)):
                 sleep(1)
             print('\nDone. Your information in safe!')
             print("Write 'coom' To see all commands\nWrite 'q' to quit")
