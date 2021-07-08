@@ -1,7 +1,8 @@
 # Password Keeper
-![GitHub language count](https://img.shields.io/github/languages/count/ivanCodegod/password-keeper?logo=GitHub)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ivanCodegod/password-keeper?color=yellow)
-![GitHub repo size](https://img.shields.io/github/repo-size/ivanCodegod/password-keeper?logo=GitHub)
+![GitHub language count](https://img.shields.io/github/languages/count/ivanCodegod/password-keeper?logo=GitHub&logoColor=blue)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ivanCodegod/password-keeper?color=yellow&logo=GitHub&logoColor=black)
+![GitHub repo size](https://img.shields.io/github/repo-size/ivanCodegod/password-keeper?logo=GitHub&logoColor=purple)
+![GitHub tag (latest SemVer pre-release)](https://img.shields.io/github/v/tag/ivanCodegod/password-keeper?color=red&include_prereleases&logo=GitHub&logoColor=green)
 
 Password Keeper is a program that allows you to:
 - Storage your 'information' like __password__, __login__ and __mail__.
@@ -9,7 +10,11 @@ Password Keeper is a program that allows you to:
 
 
 ## How To Use?
-1. Create file 'database.ini.txt' and make it for yourself:
+1. Clone the repository:
+```txt
+    git clone https://github.com/ivanCodegod/password-keeper.git
+```
+2. Create file 'database.ini.txt' and make it for yourself:
 
 ``database.ini.txt``
 ```txt
@@ -19,7 +24,7 @@ Password Keeper is a program that allows you to:
     user=abstract  # your username
     password=123  # Your password
 ```
-2. Look at the contents of the file 'requirements.txt' and download libraries
+3. Look at the contents of the file 'requirements.txt' and download libraries
 which you don't have:
    
 ``For Linux``
@@ -31,7 +36,7 @@ which you don't have:
     pip3 install numpy | pip install numpy
 ```
 
-3. To run the program, write:
+4. To run the program, write:
 ```txt
     python db_part.py
 ```
@@ -50,4 +55,5 @@ See all Title's of information that you already save.
 
 Quit the program.
 - comm
+
 Open navigation panel and show all available commands.
