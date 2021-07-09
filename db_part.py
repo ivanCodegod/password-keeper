@@ -1,14 +1,7 @@
 import psycopg2
 from config import config
-from time import sleep
-from tqdm import tqdm
 from tabulate import tabulate
-
-
-def help_note():
-    print(f"\n{'-' * 50}\n'get' - To get your information that you "
-          f"already save.\n'set' - To set your information into a storage.\n'all' - To see all Title's.\n'q' To quit "
-          f"the program.\n'comm' - To see all available commands.\n{'-' * 50}")
+from db_addition import help_list, progress_bar
 
 
 def parsing(source):
@@ -21,39 +14,34 @@ def parsing(source):
     return tabulate(list_value, column_list, tablefmt="grid")
 
 
-def process(get: bool, param="search_all"):
+def process(way_of_processing: str):
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
         params = config()
         print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(**params)
-
         cur = conn.cursor()
 
-        if not get and param == "get":  # get information
+        if way_of_processing == "get":  # get information for a given 'title'
             title = input("Enter name of Title: ")
             cur.execute(f"SELECT title, login, pass, email from users_information where title = '{title}'")
             response = cur.fetchall()
-            # Progress bar
-            for i in tqdm.tqdm(range(2)):
-                sleep(1)
 
-            print(f"\n{parsing(response)}" if response else f"\nThere is no such information like <<{title}>>")
-            print("Write 'coom' To see all commands\nWrite 'q' to quit")
-        elif not get and param == 'search_all':  # get all available title of information
-            print("Searching all available Title's...\n")
+            progress_bar()
+            print(f"\n{parsing(response)}\n{help_list['help_propose']}" if response else f"\nThere is no such "
+                  f"information like <<{title}>>\n{help_list['help_propose']}")
+
+        elif way_of_processing == 'all':  # get all available title of information
+            print("Searching all available Note's...")
 
             cur.execute(f"SELECT title from users_information order by title")
             response = cur.fetchall()
-            # Progress bar
-            for i in tqdm.tqdm(range(2)):
-                sleep(1)
 
-            print(f"\n{parsing(response)}\n\nYou can open any of them." if response else f"\nThere is no title's, you "
-                                                                                         f"can add one.")
-            print("Write 'coom' To see all commands\nWrite 'q' to quit")
-        else:  # set information
+            progress_bar()
+            print(f"\n{parsing(response)}\n{help_list['help_propose']}" if response else f"\nThere is no "
+                  f"title's, you can add one.")
+        elif way_of_processing == 'set':  # set information
             sql = f"insert into users_information (title,login,pass,email) values(%s,%s,%s,%s)"
             sql_list = [
                 (input('Enter <<title>> of your info: '),
@@ -61,15 +49,12 @@ def process(get: bool, param="search_all"):
                  input('Enter <<password>>: '),
                  input('Enter <<email>>: '))
             ]
-            # Progress bar
-            for i in tqdm.tqdm(range(3)):
-                sleep(1)
-            print('\nDone. Your information in safe!')
-            print("Write 'coom' To see all commands\nWrite 'q' to quit")
+
+            progress_bar()
+            print(f"\nDone! Your information is save.\n{help_list['help_propose']}")
 
             cur.executemany(sql, sql_list)
             conn.commit()
-
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
@@ -79,24 +64,25 @@ def process(get: bool, param="search_all"):
 
 
 def main():
-    FLAG = True
-    print(f"Welcome to <<Password keeper program>>\nIn this program you can store your passwords for easy or get it "
-          f"back.\n\n")
-    print(f"To see all commands write 'comm'\nIf you need to get info, print 'get'\nIf you need to set "
-          "info, ""print 'set'\nTo see all titles of information write 'all'\nTo quit the program write 'q'\n\t\t")
-    while FLAG:
+    flag = True
+    print(help_list['intro'])
+    print(help_list['commands'])
+
+    while flag:
         user = input("----->  ").lower()
         if user == 'all':
-            process(False)
+            process('all')
         elif user == 'get':
-            process(False, "get")
+            process('get')
         elif user == 'set':
-            process(True, "")
+            process('set')
         elif user == 'comm':
-            help_note()
+            print(help_list['commands'])
         elif user == 'q':
             print("Program stopped")
-            FLAG = False
+            flag = False
+        else:
+            print(f"No such commands like: {user}\n{help_list['commands']}")
 
 
 if __name__ == '__main__':
