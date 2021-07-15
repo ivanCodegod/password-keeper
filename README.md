@@ -24,16 +24,11 @@ Password Keeper is a program that allows you to:
     user=abstract  # your username
     password=123  # Your password
 ```
-3. Look at the contents of the file 'requirements.txt' and download libraries
-which you don't have:
-   
-``For Linux``
-```txt
-    sudo pip3 install 'library name'
-```
+3. Download libraries:
+
 ``For Windows``
 ```txt
-    pip3 install numpy | pip install numpy
+    pip install -r requirements.txt
 ```
 
 4. To run the program, write:
